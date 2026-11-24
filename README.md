@@ -1,18 +1,14 @@
-# RBXDecomp
+# RBXDecomp-Web
 
-[Discord](https://discord.gg/2JcBQFxVPv) | [Contributing](/CONTRIBUTING.md)
+[Discord](https://discord.gg/Zthkqx8Sdp) | [Contributing](/CONTRIBUTING.md)
 
-This is a decompilation of Roblox as it was released in December 2007. We're writing the source back until Visual C++ compiles it into the same binaries, instruction for instruction, and the end goal is a codebase we can build on.
+This is the WebAssembly port of the December 2007 Roblox Decomp "RBXDecomp", it is a decompilation instruction for instruction,
 
-We follow the conventions and tooling of the [LEGO Racers decompilation](https://github.com/isledecomp/racers).
-
-Keep in mind that this code reproduces the original release as it was, bugs included. It only builds for 32-bit Windows. If you're after a modern, cross-platform codebase, see [OpenRBX](https://github.com/OpenRBX-org/OpenRBX).
+Keep in mind that this code reproduces the original release as it was, bugs included. It only builds for 32-bit Windows.
 
 ## Progress
 
-<p align="center"><a href="https://openrbx-org.github.io/RBXDecomp/ROBLOXPROGRESS.HTML"><img src="https://openrbx-org.github.io/RBXDecomp/ROBLOXPROGRESS.SVG" width="45%"></a> <a href="https://openrbx-org.github.io/RBXDecomp/WEBSERVICEPROGRESS.HTML"><img src="https://openrbx-org.github.io/RBXDecomp/WEBSERVICEPROGRESS.SVG" width="45%"></a></p>
-
-Both `WebService.dll` from RBXGS, the game server, and the client, `Roblox.exe`, are functionally complete. Work still continues to match the remaining functions.
+Currently still working to make the web client stable.
 
 ## Building
 
