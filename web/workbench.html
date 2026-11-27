@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>RBXDecomp · Lua workbench</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <header><span>RBXDecomp / WebAssembly</span><strong id="status" role="status">Loading…</strong></header>
+    <h1>Browser platform workbench</h1>
+    <p>Original Roblox Lua 5.1.1 compiled to WebAssembly, with browser networking and audio adapters.</p>
+    <aside>This build does not yet run the Roblox engine or join games. Rendering, physics, Roblox script bindings, and replication are not connected.</aside>
+    <label for="source">Lua source</label>
+    <textarea id="source" spellcheck="false">print(_VERSION)
+print("Roblox's original Lua VM is running in WebAssembly")
+local total = 0
+for i = 1, 10 do total = total + i end
+print("Sum:", total)
+</textarea>
+    <nav aria-label="Script controls">
+      <button id="run" disabled>Run script</button>
+      <button id="reset">Stop / reset VM</button>
+      <button id="audio">Enable audio</button>
+      <label class="file">Open Lua file<input id="file" type="file" accept=".lua,text/plain"></label>
+    </nav>
+    <section>
+      <h2>Network transport</h2>
+      <p>Connects to a WebSocket endpoint or the supplied UDP gateway. This tests transport, without performing a RakNet handshake or a game join.</p>
+      <label for="endpoint">WebSocket URL</label>
+      <input id="endpoint" type="url" value="ws://127.0.0.1:8765" autocomplete="off">
+      <button id="network" disabled>Load transport example</button>
+    </section>
+    <section>
+      <h2>Audio</h2>
+      <p>Enable audio, then choose a local browser-supported sound file to generate a Lua playback script.</p>
+      <input id="sound" type="file" accept="audio/*">
+    </section>
+    <section>
+      <h2>Output <button id="clear">Clear</button></h2>
+      <pre id="output" role="log" aria-live="polite"></pre>
+    </section>
+  </main>
+  <script type="module" src="app.mjs"></script>
+</body>
+</html>

@@ -68,7 +68,11 @@ G3D::SkyRef Sky::getG3DSky(Sky* sky)
 				filenames[5] = testImage(ContentProvider::singleton().getFile(sky->skyLf), image);
 			}
 
+#ifdef __EMSCRIPTEN__
+			std::string directory = ContentProvider::singleton().assetFolder() + "sky/";
+#else
 			std::string directory = ContentProvider::singleton().assetFolder() + "Sky\\";
+#endif
 			G3D::SkyRef g3dSky = G3D::Sky::fromFile(NULL, directory, filenames, sky->drawCelestialBodies, 1.0);
 
 			if (g3dSky.notNull()) {
@@ -85,7 +89,11 @@ G3D::SkyRef Sky::getG3DSky(Sky* sky)
 		}
 	}
 
+#ifdef __EMSCRIPTEN__
+	return G3D::Sky::fromFile(NULL, ContentProvider::singleton().assetFolder() + "sky/", "null_plainsky512_*.jpg");
+#else
 	return G3D::Sky::fromFile(NULL, ContentProvider::singleton().assetFolder() + "Sky\\", "null_plainsky512_*.jpg");
+#endif
 }
 
 // FUNCTION: WEBSERVICE 0x10095110

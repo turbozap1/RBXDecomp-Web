@@ -122,6 +122,10 @@ void AddSlash( char *input )
 }
 bool DirectoryExists(const char *directory)
 {
+#ifdef __EMSCRIPTEN__
+	struct stat info;
+	return stat(directory, &info) == 0 && S_ISDIR(info.st_mode);
+#else
 	_finddata_t fileInfo;
 	intptr_t dir;
 	char baseDirWithStars[560];
@@ -133,6 +137,7 @@ bool DirectoryExists(const char *directory)
 		return false;
 	_findclose(dir);
 	return true;
+#endif
 }
 void QuoteIfSpaces(char *str)
 {

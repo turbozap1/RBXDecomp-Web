@@ -19,6 +19,10 @@
 #endif
 
 
+#ifdef G3D_WASM
+namespace G3D {
+#endif
+
 #ifndef G3D_GL_ARB_multitexture_static
 PFNGLMULTITEXCOORD1FARBPROC                 glMultiTexCoord1fARB		    = NULL;
 PFNGLMULTITEXCOORD1DARBPROC                 glMultiTexCoord1dARB		    = NULL;
@@ -226,6 +230,10 @@ PFNGLSTENCILOPSEPARATEATIPROC glStencilOpSeparateATI = NULL;
 // Depth bounds
 PFNGLDEPTHBOUNDSEXTPROC glDepthBoundsEXT = NULL;
 
+
+#ifdef G3D_WASM
+}
+#endif
 
 namespace G3D {
 

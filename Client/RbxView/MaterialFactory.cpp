@@ -39,7 +39,11 @@ DECOMP_SIZE_ASSERT(MegaTextureProxy, 0x50)
 G3D::ReferenceCountedPointer<G3D::Texture> MegaTextureProxy::resolve(G3D::RenderDevice* rd)
 {
 	if (!loaded) {
+#ifdef __EMSCRIPTEN__
+		unsigned int maxColors = std::min<size_t>(numStrips, BrickColor::colorPalette().size());
+#else
 		unsigned int maxColors = std::min(numStrips, BrickColor::colorPalette().size());
+#endif
 
 		G3D::GImage image(filename, G3D::GImage::AUTODETECT);
 		G3D::GImage strip(image.width * numStrips, image.height, 3);

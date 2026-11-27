@@ -194,7 +194,15 @@ void timed_mutex::do_unlock(cv_state&)
 mutex::mutex()
 {
     int res = 0;
+#ifdef __EMSCRIPTEN__
+    pthread_mutexattr_t attributes;
+    pthread_mutexattr_init(&attributes);
+    pthread_mutexattr_settype(&attributes, PTHREAD_MUTEX_RECURSIVE);
+    res = pthread_mutex_init(&m_mutex, &attributes);
+    pthread_mutexattr_destroy(&attributes);
+#else
     res = pthread_mutex_init(&m_mutex, 0);
+#endif
     if (res != 0)
         throw thread_resource_error();
 }
@@ -234,7 +242,15 @@ void mutex::do_unlock(cv_state& state)
 try_mutex::try_mutex()
 {
     int res = 0;
+#ifdef __EMSCRIPTEN__
+    pthread_mutexattr_t attributes;
+    pthread_mutexattr_init(&attributes);
+    pthread_mutexattr_settype(&attributes, PTHREAD_MUTEX_RECURSIVE);
+    res = pthread_mutex_init(&m_mutex, &attributes);
+    pthread_mutexattr_destroy(&attributes);
+#else
     res = pthread_mutex_init(&m_mutex, 0);
+#endif
     if (res != 0)
         throw thread_resource_error();
 }

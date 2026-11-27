@@ -274,7 +274,11 @@ void AggregatingSceneManager::Bucket::optimize(AggregatingSceneManager& sceneMan
 		return;
 	}
 
+#ifdef __EMSCRIPTEN__
+	Clusterer clusterer(std::max<size_t>(1U, queue.size() / aggregationSize));
+#else
 	Clusterer clusterer(std::max(1U, queue.size() / aggregationSize));
+#endif
 
 	clusterer.addSamples(queue.begin(), queue.end());
 	queue.clear();

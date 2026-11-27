@@ -53,7 +53,12 @@ void LocalBackpackItem::render2d(Adorn* adorn)
 		}
 
 		if (guiImageDraw.setImage(adorn, myItem->getTextureId())) {
+#ifdef __EMSCRIPTEN__
+			Rect imageRect = draw.inset(fontSize);
+			guiImageDraw.render2d(adorn, myItem->drawEnabled(), imageRect, widgetState);
+#else
 			guiImageDraw.render2d(adorn, myItem->drawEnabled(), draw.inset(fontSize), widgetState);
+#endif
 			return;
 		}
 

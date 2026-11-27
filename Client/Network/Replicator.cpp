@@ -561,7 +561,11 @@ bool Replicator::remoteDeleteOnDisconnect(const Instance* instance) const
 // FUNCTION: ROBLOX 0x004c36f0
 void Peer::Update(RakPeerInterface* peer)
 {
+#ifdef __EMSCRIPTEN__
+	profilePacketsThread->sample(reinterpret_cast<void*>(static_cast<RakPeer*>(peer)->processPacketsThreadHandle));
+#else
 	profilePacketsThread->sample(static_cast<RakPeer*>(peer)->processPacketsThreadHandle);
+#endif
 
 	PluginInterface::Update(peer);
 }
@@ -1932,7 +1936,11 @@ PluginReceiveResult Replicator::OnReceive(RakPeerInterface* peer, Packet* packet
 				inBitstream >> remoteScope;
 
 				if (Name::lookup(remoteScope) == Guid::getLocalScope()) {
+#ifdef __EMSCRIPTEN__
+					throw std::runtime_error("Remote peer is running in the same process");
+#else
 					throw std::exception("Remote peer is running in the same process");
+#endif
 				}
 
 				TopReplConts::iterator end = topReplicationContainers.end();

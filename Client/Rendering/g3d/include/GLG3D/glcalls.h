@@ -26,6 +26,9 @@
 #include "G3D/Color4uint8.h"
 #include "G3D/debugAssert.h"
 #include "GLG3D/glheaders.h"
+#ifdef G3D_WASM
+#include <GL/osmesa.h>
+#endif
 #ifdef _DEBUG
 // Needed for debugAssertGLOk
 #   include "GLG3D/getOpenGLState.h"
@@ -86,6 +89,13 @@ Vector4 glGetVector4(GLenum which);
      */
     inline GLContext glGetCurrentContext() {
         return wglGetCurrentContext();
+    }
+
+#elif defined(G3D_WASM)
+
+    typedef OSMesaContext GLContext;
+    inline GLContext glGetCurrentContext() {
+        return OSMesaGetCurrentContext();
     }
 
 #elif defined(G3D_LINUX)
@@ -233,7 +243,9 @@ void glMultMatrix(const CoordinateFrame& cf);
 /** Platform independent version of 
     wglGetProcAddress/glXGetProcAddress/NSGLGetProcAddress */
 inline void * glGetProcAddress(const char * name){
-    #ifdef G3D_WIN32
+    #ifdef G3D_WASM
+        return reinterpret_cast<void*>(OSMesaGetProcAddress(name));
+    #elif defined(G3D_WIN32)
 	    return (void *)wglGetProcAddress(name);
     #elif defined(G3D_LINUX)
 	    return (void *)glXGetProcAddressARB((const GLubyte*)name);

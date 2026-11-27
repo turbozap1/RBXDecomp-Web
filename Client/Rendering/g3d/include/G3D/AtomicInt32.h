@@ -72,7 +72,9 @@ public:
 
     /** Returns the old value, before the add. */
     inline int32 add(const int32 x) {
-#       if defined(G3D_WIN32)
+#       if defined(G3D_WASM)
+            return __atomic_fetch_add(&_value, x, __ATOMIC_SEQ_CST);
+#       elif defined(G3D_WIN32)
 
             return InterlockedExchangeAdd(VCAST &_value, x);
 
@@ -111,7 +113,9 @@ public:
     }
 
     inline void increment() {
-#       if defined(G3D_WIN32)
+#       if defined(G3D_WASM)
+            add(1);
+#       elif defined(G3D_WIN32)
             // Note: returns the newly incremented value
             InterlockedIncrement(VCAST &_value);
 #       elif defined(G3D_LINUX)
@@ -123,7 +127,9 @@ public:
 
     /** Returns zero if the result is zero after decrement, non-zero otherwise.*/
     inline uint32 decrement() {
-#       if defined(G3D_WIN32)
+#       if defined(G3D_WASM)
+            return __atomic_sub_fetch(&_value, 1, __ATOMIC_SEQ_CST) != 0;
+#       elif defined(G3D_WIN32)
             // Note: returns the newly decremented value
             return InterlockedDecrement(VCAST &_value) != 0;
 #       elif defined(G3D_LINUX)
@@ -153,7 +159,11 @@ public:
 
      */ 
     inline int32 compareAndSet(const int32 comperand, const int32 exchange) {
-#       if defined(G3D_WIN32)
+#       if defined(G3D_WASM)
+            int32 previous = comperand;
+            __atomic_compare_exchange_n(&_value, &previous, exchange, false, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST);
+            return previous;
+#       elif defined(G3D_WIN32)
 #          if defined(G3D_MINGW32)
                 return (int32)InterlockedCompareExchange(VCAST &_value, exchange, comperand);
 #          elif (_MSC_VER <= 1200)

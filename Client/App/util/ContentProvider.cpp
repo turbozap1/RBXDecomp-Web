@@ -10,25 +10,35 @@
 
 #include <G3D/format.h>
 #include <algorithm>
+#ifdef __EMSCRIPTEN__
+#include "content_path.h"
+#include <G3D/Crypto.h>
+#include <sys/stat.h>
+#else
 #include <atlpath.h>
 #include <atlstr.h>
+#include <shlobj.h>
+#include <wincrypt.h>
+#endif
 #include <boost/bind.hpp>
 #include <boost/iostreams/copy.hpp>
 #include <fstream>
 #include <istream>
-#include <shlobj.h>
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <wincrypt.h>
 
 namespace RBX {
 
 // SIZE 0x28
 class MD5HasherImpl : public MD5Hasher
 {
+#ifdef __EMSCRIPTEN__
+	std::string bytes;
+#else
 	HCRYPTPROV hProv;   // 0x04
 	HCRYPTHASH hHash;   // 0x08
+#endif
 	std::string result; // 0x0c
 
 public:
@@ -120,8 +130,12 @@ std::string MD5Hasher::convertToLegacyHash(std::string hash)
 
 // FUNCTION: WEBSERVICE 0x1004f980
 // FUNCTION: ROBLOX 0x0057da30
-MD5HasherImpl::MD5HasherImpl() : hProv(0), hHash(0)
+MD5HasherImpl::MD5HasherImpl()
+#ifndef __EMSCRIPTEN__
+	: hProv(0), hHash(0)
+#endif
 {
+#ifndef __EMSCRIPTEN__
 	if (!CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT)) {
 		StandardOut::singleton()->print(
 			MESSAGE_ERROR, "Error during CryptAcquireContext. GetLastError = %d", GetLastError()
@@ -133,6 +147,7 @@ MD5HasherImpl::MD5HasherImpl() : hProv(0), hHash(0)
 			MESSAGE_ERROR, "Error during CryptCreateHash. GetLastError = %d", GetLastError()
 		);
 	}
+#endif
 }
 
 // FUNCTION: WEBSERVICE 0x1004fae0
@@ -161,18 +176,28 @@ std::string MD5HasherImpl::toString()
 // FUNCTION: ROBLOX 0x0057dc30
 void MD5HasherImpl::addData(const std::string& data)
 {
+#ifdef __EMSCRIPTEN__
+	bytes += data;
+	result.clear();
+#else
 	if (!CryptHashData(hHash, (const BYTE*) data.c_str(), data.size(), 0)) {
 		StandardOut::singleton()->print(MESSAGE_ERROR, "Error during CryptHashData. GetLastError = %d", GetLastError());
 	}
+#endif
 }
 
 // FUNCTION: WEBSERVICE 0x1004fc40
 // FUNCTION: ROBLOX 0x0057dcf0
 void MD5HasherImpl::addData(const char* data, unsigned int nBytes)
 {
+#ifdef __EMSCRIPTEN__
+	bytes.append(data, nBytes);
+	result.clear();
+#else
 	if (!CryptHashData(hHash, (const BYTE*) data, nBytes, 0)) {
 		StandardOut::singleton()->print(MESSAGE_ERROR, "Error during CryptHashData. GetLastError = %d", GetLastError());
 	}
+#endif
 }
 
 // FUNCTION: WEBSERVICE 0x1004fcf0
@@ -193,6 +218,16 @@ bool ContentProvider::isRequestQueueEmpty()
 // FUNCTION: ROBLOX 0x0057ea50
 const char* MD5HasherImpl::c_str()
 {
+#ifdef __EMSCRIPTEN__
+	if (result.empty()) {
+		G3D::MD5Hash hash = G3D::Crypto().md5(bytes.data(), bytes.size());
+		char value[3];
+		for (int i = 0; i < 16; ++i) {
+			sprintf(value, "%02x", hash[i]);
+			result += value;
+		}
+	}
+#else
 	if (result.size() == 0) {
 		DWORD hashLength;
 		DWORD foo = sizeof(DWORD);
@@ -217,6 +252,7 @@ const char* MD5HasherImpl::c_str()
 
 		delete[] hash;
 	}
+#endif
 
 	return result.c_str();
 }
@@ -267,6 +303,19 @@ void ContentProvider::clearFileCache()
 {
 	CPath path = getLocalCachePath(false);
 
+#ifdef __EMSCRIPTEN__
+	DIR* directory = opendir(path);
+	if (directory != NULL) {
+		while (struct dirent* entry = readdir(directory)) {
+			std::string filename = path.m_strPath + entry->d_name;
+			struct stat info;
+			if (stat(filename.c_str(), &info) == 0 && S_ISREG(info.st_mode)) {
+				std::remove(filename.c_str());
+			}
+		}
+		closedir(directory);
+	}
+#else
 	if (path.m_strPath != "") {
 		WIN32_FIND_DATA FindFileData;
 		HANDLE hFind = FindFirstFile(path.m_strPath + "*.*", &FindFileData);
@@ -279,6 +328,7 @@ void ContentProvider::clearFileCache()
 			} while (FindNextFile(hFind, &FindFileData));
 		}
 	}
+#endif
 }
 
 // FUNCTION: WEBSERVICE 0x10051f30
@@ -656,6 +706,10 @@ void ContentProvider::load(ContentId id, std::vector<boost::shared_ptr<Instance>
 // FUNCTION: ROBLOX 0x00581a50
 ContentProvider::ContentProvider()
 {
+#ifdef __EMSCRIPTEN__
+	mkdir("/content", 0777);
+	setAssetFolder("/content");
+#else
 	char path[MAX_PATH];
 	if (SHGetFolderPathAndSubDir(NULL, CSIDL_COMMON_APPDATA, NULL, 0, "Roblox\\content\\", path) == S_OK) {
 		ContentProvider::singleton().setAssetFolder(path);
@@ -663,6 +717,7 @@ ContentProvider::ContentProvider()
 	else {
 		StandardOut::singleton()->print(MESSAGE_WARNING, "Failed to get asset folder");
 	}
+#endif
 
 	requestProcessor.reset(new worker_thread(boost::bind(&ContentProvider::processRequests, this), "rbx_content"));
 }

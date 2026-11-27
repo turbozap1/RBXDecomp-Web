@@ -11,7 +11,7 @@
 #include "G3D/Array.h"
 #include "G3D/stringutils.h"
 
-#if defined(G3D_LINUX) || defined(G3D_OSX)
+#if defined(G3D_LINUX) || defined(G3D_OSX) || defined(G3D_WASM)
     #include <unistd.h>
     #include <errno.h>
     #include <sys/socket.h>

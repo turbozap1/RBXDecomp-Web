@@ -9,7 +9,7 @@
 namespace RBX {
 
 static const Reflection::PropDescriptor<PVInstance, CoordinateFrame> desc_CoordFrame(
-	"CoordinateFrame", "Data", NULL, &PVInstance::setPVGridOffsetLegacy, Reflection::PropertyDescriptor::LEGACY
+	"CoordinateFrame", "Data", 0, &PVInstance::setPVGridOffsetLegacy, Reflection::PropertyDescriptor::LEGACY
 );
 
 static Reflection::PropDescriptor<PVInstance, bool> prop_ControllerFlagShown(

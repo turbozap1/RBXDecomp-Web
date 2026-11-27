@@ -7,6 +7,9 @@
 #include <boost/thread/tss.hpp>
 #include <string>
 #include <windows.h>
+#ifdef __EMSCRIPTEN__
+#include <emscripten/threading.h>
+#endif
 
 static boost::thread_specific_ptr<std::string>* foo;
 
@@ -39,6 +42,9 @@ typedef struct tagTHREADNAME_INFO
 // FUNCTION: ROBLOX 0x005a9de0
 void SetThreadName(DWORD dwThreadID, LPCSTR szThreadName)
 {
+#ifdef __EMSCRIPTEN__
+	emscripten_set_thread_name(pthread_self(), szThreadName);
+#else
 	THREADNAME_INFO info;
 	info.dwType = 0x1000;
 	info.szName = szThreadName;
@@ -52,9 +58,11 @@ void SetThreadName(DWORD dwThreadID, LPCSTR szThreadName)
 	}
 	__except (EXCEPTION_CONTINUE_EXECUTION) {
 	}
+#endif
 }
 
 // SIZE 0x8
+#ifndef __EMSCRIPTEN__
 class ThreadPrioritySetter
 {
 	const int old; // 0x0
@@ -75,6 +83,7 @@ public:
 		}
 	}
 };
+#endif
 
 // FUNCTION: WEBSERVICE 0x100325a0
 // FUNCTION: ROBLOX 0x005aa010
@@ -158,7 +167,9 @@ void run_in_background(const boost::function0<void>& threadfunc, std::string nam
 {
 	try {
 		set_thread_name(name.c_str());
+#ifndef __EMSCRIPTEN__
 		ThreadPrioritySetter set(THREAD_PRIORITY_BELOW_NORMAL);
+#endif
 		threadfunc();
 	}
 	catch (std::exception& e) {

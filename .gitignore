@@ -6,6 +6,9 @@ reccmp-build.yml
 /.claude
 /.env
 /.venv
+/.venv-web/
+/web/node_modules/
+/web/content/
 /env/
 /venv/
 /ENV/

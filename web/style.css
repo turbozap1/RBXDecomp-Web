@@ -1,0 +1,30 @@
+:root { color-scheme: dark; font: 16px/1.6 system-ui, sans-serif; background: #10151d; color: #e4eaf3; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1020px; padding: 36px 24px 70px; margin: auto; }
+header, nav { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; }
+header { justify-content: space-between; color: #9caec5; }
+h1 { font-size: clamp(1.7rem, 4vw, 2.6rem); margin-bottom: 8px; letter-spacing: -.03em; }
+h2 { font-size: 1.15rem; }
+p { color: #b3c0d2; }
+aside { padding: 16px; border-left: 3px solid #e6b875; background: #27251f; margin: 24px 0; }
+label { display: block; margin-bottom: 8px; }
+textarea, input[type=url] { background: #0a0f16; color: #e4eaf3; border: 1px solid #40506a; border-radius: 6px; padding: 12px; width: 100%; }
+textarea { min-height: 300px; resize: vertical; font: 15px/1.6 ui-monospace, monospace; tab-size: 2; }
+button, .file { background: #283b55; color: #eef4ff; border: 1px solid #526b8c; border-radius: 6px; padding: 9px 15px; cursor: pointer; font: inherit; }
+button:disabled { opacity: .5; cursor: wait; }
+button:hover:enabled, .file:hover { background: #3b5576; }
+button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid #89c7ff; outline-offset: 3px; }
+nav { margin-top: 14px; }
+.file { margin: 0; }
+.file input { max-width: 200px; display: block; font-size: 12px; }
+section { margin-top: 28px; padding-top: 12px; border-top: 1px solid #2a374b; }
+section button { margin-top: 10px; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 350px; min-height: 110px; overflow: auto; padding: 16px; background: #0a0f16; border-radius: 6px; }
+#viewport { width: 100%; height: clamp(280px, 46vh, 550px); display: block; border-radius: 8px; background: #8ab8e3; touch-action: none; }
+.viewport-caption { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: #a6b8ce; padding-top: 6px; }
+.connection-fields { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 12px; }
+.connection-fields label { flex: 1; min-width: 120px; }
+.connection-fields input { display: block; width: 100%; background: #0a0f16; color: #e4eaf3; border: 1px solid #40506a; border-radius: 6px; padding: 9px; font: inherit; }
+footer { margin-top: 30px; }
+a { color: #9ccfff; }

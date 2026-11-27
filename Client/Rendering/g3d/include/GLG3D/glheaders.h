@@ -55,6 +55,10 @@
 
 // OpenGL extensions
 
+#ifdef G3D_WASM
+namespace G3D {
+#endif
+
 
 // OpenGL 1.2.1 and later define these as part of the static link; don't 
 // define them.
@@ -341,5 +345,9 @@ extern PFNWGLDESTROYPBUFFEREXTPROC wglDestroyPbufferEXT;
 
 
 extern PFNGLDEPTHBOUNDSEXTPROC glDepthBoundsEXT;
+
+#ifdef G3D_WASM
+}
+#endif
 
 #endif

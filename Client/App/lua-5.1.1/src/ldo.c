@@ -121,6 +121,9 @@ public:
 	// FUNCTION: WEBSERVICE 0x100b6270
 	// FUNCTION: ROBLOX 0x00602a60
 	virtual const char* what() const
+#ifdef __EMSCRIPTEN__
+		noexcept
+#endif
 	{ return lua_tostring(L, -1); }
 
 	// FUNCTION: WEBSERVICE 0x100b6290

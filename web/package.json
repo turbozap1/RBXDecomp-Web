@@ -1,0 +1,8 @@
+{
+  "name": "rbxdecomp-browser-server",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Local server for the recovered 2007 Roblox browser engine",
+  "scripts": { "server": "node server.mjs" },
+  "dependencies": { "ws": "8.23.0" }
+}

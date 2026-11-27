@@ -88,7 +88,7 @@
 
 # define HOST_ENDIAN_IS_BIG
 
-#elif defined(__i386__) || defined(i386) || defined(intel) || defined(_M_IX86) || \
+#elif defined(__wasm__) || defined(__i386__) || defined(i386) || defined(intel) || defined(_M_IX86) || \
 	defined(__amd64) || defined(__amd64__)	|| \
 	defined(__alpha__) || defined(__alpha) || defined(__ia64) || defined(__ia64__) || \
 	defined(_M_ALPHA) || defined(ns32000) || defined(__ns32000__) || defined(sequent) || \
@@ -124,7 +124,7 @@ namespace cat
 
 # define BIG_ENDIAN
 
-#elif defined(__i386__) || defined(i386) || defined(intel) || defined(_M_IX86) || \
+#elif defined(__wasm__) || defined(__i386__) || defined(i386) || defined(intel) || defined(_M_IX86) || \
 	defined(__amd64) || defined(__amd64__)	|| \
 	defined(__alpha__) || defined(__alpha) || defined(__ia64) || defined(__ia64__) || \
 	defined(_M_ALPHA) || defined(ns32000) || defined(__ns32000__) || defined(sequent) || \
@@ -164,6 +164,12 @@ namespace cat
 #elif defined(__INTEL_COMPILER) || defined(__ICL) || defined(__ICC) || defined(__ECC) // Intel
 
 # error "Intel : I don't know your compiler"
+
+#elif defined(__EMSCRIPTEN__)
+
+# define INLINE inline
+# define HASINT64
+# define NO_TEMPLATE_INLINE_ASSEMBLY
 
 #elif (defined(__GNUC__)  || defined(__GCCXML__)) // GNU C++
 

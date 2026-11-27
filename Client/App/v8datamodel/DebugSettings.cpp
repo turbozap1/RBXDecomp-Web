@@ -9,7 +9,9 @@
 
 #include <G3D/RegistryUtil.h>
 #include <G3D/format.h>
+#ifndef __EMSCRIPTEN__
 #include <setupapi.h>
+#endif
 #include <windows.h>
 
 namespace RBX {
@@ -160,6 +162,9 @@ int DebugSettings::cpuSpeed() const
 // FUNCTION: ROBLOX 0x0057ac70
 std::string DebugSettings::osVer() const
 {
+#ifdef __EMSCRIPTEN__
+	return "WebAssembly";
+#else
 	OSVERSIONINFO osvi = {0};
 
 	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
@@ -167,17 +172,22 @@ std::string DebugSettings::osVer() const
 	return G3D::format(
 		"%d.%d.%d.%d", osvi.dwOSVersionInfoSize, osvi.dwMajorVersion, osvi.dwMinorVersion, osvi.dwBuildNumber
 	);
+#endif
 }
 
 // FUNCTION: WEBSERVICE 0x100b2f00
 // FUNCTION: ROBLOX 0x0057ace0
 int DebugSettings::osPlatformId() const
 {
+#ifdef __EMSCRIPTEN__
+	return -1;
+#else
 	OSVERSIONINFO osvi = {0};
 
 	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
 	GetVersionEx(&osvi);
 	return osvi.dwPlatformId;
+#endif
 }
 
 // FUNCTION: WEBSERVICE 0x100b2f40
@@ -191,6 +201,9 @@ std::string DebugSettings::glVendor() const
 // STUB: ROBLOX 0x0057ada0
 std::string DebugSettings::gfxcard() const
 {
+#ifdef __EMSCRIPTEN__
+	return "Browser WebGL";
+#else
 	DISPLAY_DEVICE displayDevice;
 	memset(&displayDevice, 0, sizeof(displayDevice));
 	displayDevice.cb = sizeof(displayDevice);
@@ -259,6 +272,7 @@ std::string DebugSettings::gfxcard() const
 	);
 
 	return std::string(displayDevice.DeviceString) + " drv=" + driverVersion;
+#endif
 }
 
 // FUNCTION: WEBSERVICE 0x100b33d0

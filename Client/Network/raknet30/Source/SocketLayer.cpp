@@ -240,6 +240,11 @@ SOCKET SocketLayer::CreateBoundSocket( unsigned short port, bool blockingSocket,
 	}
 
 	// Listen on our designated Port#
+#ifdef __EMSCRIPTEN__
+	if (port == 0) {
+		port = static_cast<unsigned short>(49152 + emscripten_random() * 16384);
+	}
+#endif
 	listenerSocketAddress.sin_port = htons( port );
 
 	// Fill in the rest of the address structure
@@ -251,7 +256,11 @@ SOCKET SocketLayer::CreateBoundSocket( unsigned short port, bool blockingSocket,
 	}
 	else
 	{
+#ifdef __EMSCRIPTEN__
+		listenerSocketAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+#else
 		listenerSocketAddress.sin_addr.s_addr = INADDR_ANY;
+#endif
 	}	
 
 	// bind our name to the socket

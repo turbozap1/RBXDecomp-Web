@@ -7,7 +7,14 @@
 
 #include <algorithm>
 #include <boost/thread/once.hpp>
+#ifndef __EMSCRIPTEN__
 #include <objbase.h>
+#else
+#include <emscripten.h>
+EM_JS(void, browserGuid, (unsigned char* bytes), {
+	HEAPU8.set(crypto.getRandomValues(new Uint8Array(16)), bytes);
+});
+#endif
 #include <stdio.h>
 #include <windows.h>
 
@@ -20,6 +27,18 @@ static long nextIndex;
 // FUNCTION: ROBLOX 0x005ba270
 void Guid::generateGUID(std::string& result)
 {
+#ifdef __EMSCRIPTEN__
+	unsigned char bytes[16];
+	browserGuid(bytes);
+	bytes[6] = (bytes[6] & 15) | 64;
+	bytes[8] = (bytes[8] & 63) | 128;
+	result = "RBX";
+	char value[3];
+	for (int i = 0; i < 16; ++i) {
+		sprintf(value, "%02X", bytes[i]);
+		result += value;
+	}
+#else
 	GUID guid;
 
 	result = "RBX";
@@ -40,6 +59,7 @@ void Guid::generateGUID(std::string& result)
 	result.erase(0x11, 1);
 	result.erase(0x0c, 1);
 	result.erase(0x03, 1);
+#endif
 }
 
 // FUNCTION: WEBSERVICE 0x1003d4e0
@@ -59,6 +79,9 @@ bool Guid::Data::operator<(const Data& other) const
 
 	if (thisScope != otherScope) {
 		order = thisScope->name.compare(otherScope->name);
+#ifdef __EMSCRIPTEN__
+		order = (order > 0) - (order < 0);
+#endif
 
 		if (order != -1 && order != 0) {
 			return false;
@@ -91,6 +114,9 @@ int Guid::compare(const Guid* a, const Guid* b)
 	}
 	else {
 		order = scopeA->name.compare(scopeB->name);
+#ifdef __EMSCRIPTEN__
+		order = (order > 0) - (order < 0);
+#endif
 	}
 
 	if (order != -1) {

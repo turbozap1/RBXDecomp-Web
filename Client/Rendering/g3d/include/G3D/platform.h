@@ -30,7 +30,14 @@
 #   define G3D_DEBUG
 #endif
 
-#ifdef _MSC_VER 
+#if defined(__EMSCRIPTEN__)
+    #define G3D_WASM
+    #define G3D_DEPRECATED __attribute__((__deprecated__))
+    #define G3D_CHECK_PRINTF_METHOD_ARGS __attribute__((__format__(__printf__, 2, 3)))
+    #define G3D_CHECK_VPRINTF_METHOD_ARGS __attribute__((__format__(__printf__, 2, 0)))
+    #define G3D_CHECK_PRINTF_ARGS __attribute__((__format__(__printf__, 1, 2)))
+    #define G3D_CHECK_VPRINTF_ARGS __attribute__((__format__(__printf__, 1, 0)))
+#elif defined(_MSC_VER)
     #define G3D_WIN32
 #elif __MINGW32__
     #define G3D_WIN32 

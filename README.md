@@ -2,15 +2,19 @@
 
 [Discord](https://discord.gg/Zthkqx8Sdp) | [Contributing](/CONTRIBUTING.md)
 
-This is the WebAssembly port of the December 2007 Roblox Decomp "RBXDecomp", it is a decompilation instruction for instruction,
+This repository contains the matching decompilation of December 2007 Roblox and an experimental browser platform target.
 
-Keep in mind that this code reproduces the original release as it was, bugs included. It only builds for 32-bit Windows.
+The browser target compiles the recovered DataModel, ScriptContext, physics, Network/RakNet and supporting engine code to WebAssembly. The original RbxView, RenderLib, GLG3D and Mesa 6.5 rendering source also runs in WASM, including stud textures, sky, meshes and the original game GUI. JavaScript presents its framebuffer. A Web Audio platform backend, XML place loader and local game server are included. **The Windows editor shell, Ogre path and some platform features remain unported.**
+
+See [the browser build tutorial](web/README.md) for Windows/Linux/macOS build instructions, script examples, audio, the UDP gateway, tests, and the remaining engine work. The original matching targets still require 32-bit Windows and MSVC 8.0 SP1.
 
 ## Progress
 
-Currently still working to make the web client stable.
+The engine runs original Roblox Lua APIs and physics. Two actual clients receive the included server's world and replicate property changes through it. See the tutorial for `python web/serve.py --game-server`, build instructions and the current limits; original character spawning, walking and jumping are also tested.
 
 ## Building
+
+For WebAssembly, follow [web/README.md](web/README.md). The commands below build the original Windows targets.
 
 You will need:
 

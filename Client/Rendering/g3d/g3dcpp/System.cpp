@@ -47,6 +47,13 @@
     #include <sys/time.h>
     #include <pthread.h>
 
+#elif defined(G3D_WASM)
+    #include <emscripten.h>
+    #include <sys/time.h>
+    #include <sys/select.h>
+    #include <termios.h>
+    #include <unistd.h>
+    #include <pthread.h>
 #elif defined(G3D_OSX)
 
     #include <stdlib.h>
@@ -269,6 +276,11 @@ void System::init() {
     }
 
     initialized = true;
+
+#ifdef G3D_WASM
+    strcpy(_cpuArchCstr, "WebAssembly");
+    strcpy(_operatingSystemCstr, "Browser");
+#endif
 
     if ((G3D_VER % 100) != 0) {
         sprintf(versionCstr, "G3D %d.%02d beta %d",
@@ -1014,7 +1026,9 @@ void initTime() {
 
 RealTime System::getTick() { 
     init();
-    #ifdef G3D_WIN32
+    #ifdef G3D_WASM
+        return emscripten_get_now() / 1000.0;
+    #elif defined(G3D_WIN32)
         LARGE_INTEGER now;
         QueryPerformanceCounter(&now);
 

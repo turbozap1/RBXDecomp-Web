@@ -23,11 +23,11 @@ static Reflection::SignalDesc<HopperBin, void(boost::shared_ptr<Instance>)> desc
 static Reflection::SignalDesc<HopperBin, void()> desc_Deselected("Deselected");
 
 static Reflection::PropDescriptor<HopperBin, std::string> desc_legacyCommand(
-	"Command", "Data", NULL, &HopperBin::setLegacyCommand, Reflection::PropertyDescriptor::LEGACY
+	"Command", "Data", 0, &HopperBin::setLegacyCommand, Reflection::PropertyDescriptor::LEGACY
 );
 
 static Reflection::PropDescriptor<HopperBin, std::string> desc_legacyTextureName(
-	"TextureName", "Data", NULL, &HopperBin::setLegacyTextureName, Reflection::PropertyDescriptor::LEGACY
+	"TextureName", "Data", 0, &HopperBin::setLegacyTextureName, Reflection::PropertyDescriptor::LEGACY
 );
 
 bool BackpackItem::inBackpack()
@@ -150,7 +150,12 @@ void BackpackItem::render2d(Adorn* adorn)
 	}
 
 	if (guiImageDraw.setImage(adorn, textureId)) {
+#ifdef __EMSCRIPTEN__
+		Rect imageRect = draw.inset(fontSize);
+		guiImageDraw.render2d(adorn, isEnabled() || viewHack, imageRect, widgetState);
+#else
 		guiImageDraw.render2d(adorn, isEnabled() || viewHack, draw.inset(fontSize), widgetState);
+#endif
 	}
 	else {
 		Widget::render2d(adorn);

@@ -315,7 +315,11 @@ private:
 };
 
 
-#ifdef _MSC_VER
+#ifdef G3D_WASM
+    inline uint64 System::getCycleCount() {
+        return static_cast<uint64>(getTick() * 1000000000.0);
+    }
+#elif defined(_MSC_VER)
     inline uint64 System::getCycleCount() {
         uint32 timehi, timelo;
 

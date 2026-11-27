@@ -44,7 +44,7 @@ static Reflection::BoundFuncDesc<Instance, bool(shared_ptr<Instance>), 1> func_i
 );
 
 static const Reflection::PropDescriptor<Instance, std::string> prop_className(
-	"className", "Data", &Instance::getClassNameStr, NULL, Reflection::PropertyDescriptor::UI
+	"className", "Data", &Instance::getClassNameStr, 0, Reflection::PropertyDescriptor::UI
 );
 
 const Reflection::PropDescriptor<Instance, std::string> Instance::desc_Name(

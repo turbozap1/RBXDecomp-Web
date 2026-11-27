@@ -21,6 +21,8 @@
 #include <time.h>
 #ifdef G3D_WIN32
     #include "GLG3D/Win32Window.h"
+#elif defined(G3D_WASM)
+    #include "browser_window.h"
 #else
     #include "GLG3D/SDLWindow.h"    
 #endif
@@ -208,7 +210,11 @@ bool RenderDevice::init(
     #ifdef G3D_WIN32
         return init(Win32Window::create(_settings), log);
     #else
+#ifdef G3D_WASM
+        return init(new BrowserWindow(_settings.width, _settings.height), log);
+#else
         return init(new SDLWindow(_settings), log);
+#endif
     #endif
 }
 

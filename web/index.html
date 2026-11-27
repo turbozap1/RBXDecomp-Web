@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>RBXDecomp · Browser engine</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <header><span>RBXDecomp / December 2007</span><strong id="status" role="status">Loading engine…</strong></header>
+    <h1>Roblox engine in your browser</h1>
+    <p>Original C++ engine and OpenGL rendering source compiled to WebAssembly.</p>
+    <aside>RbxView → RenderLib → GLG3D → Mesa 6.5 runs inside WASM, including meshes, materials, textures and game UI. The page presents the C++ framebuffer. This port is still incomplete; the Windows editor shell and Ogre renderer are not ported.</aside>
+    <canvas id="viewport" aria-label="3D engine viewport" tabindex="0"></canvas>
+    <div class="viewport-caption"><span>Click viewport · WASD to move · Space to jump · Right-drag to look · Wheel to zoom</span><span id="metrics">Waiting for engine</span></div>
+    <nav aria-label="Engine controls">
+      <button id="play" disabled>Run simulation</button><button id="pause" disabled>Pause</button>
+      <button id="reset">Reset engine</button><button id="audio">Enable audio</button>
+      <label class="file">Load XML place<input id="place" type="file" accept=".rbxl,.rbxmx,.xml,text/xml"></label>
+    </nav>
+    <section>
+      <h2>Roblox Lua</h2>
+      <p>Scripts use the original <code>game</code>, <code>workspace</code>, <code>Instance</code>, <code>Vector3</code>, and service bindings. Run the demo, then start the simulation to watch its Parts fall and collide.</p>
+      <label for="source">Lua source</label><textarea id="source" spellcheck="false"></textarea>
+      <nav aria-label="Script controls"><button id="run" disabled>Run script</button><button id="demo" disabled>Load physics demo</button><label class="file">Open Lua file<input id="file" type="file" accept=".lua,text/plain"></label></nav>
+    </section>
+    <section>
+      <h2>Compatible game server</h2>
+      <p>Start the included server with <code>python web/serve.py --game-server</code>, then join below. The original NetworkClient and RakNet replicate the server's world and spawn the original character. This targets the 2007 protocol.</p>
+      <label for="endpoint">Gateway URL · applied when you reset the engine</label><input id="endpoint" type="url" value="ws://127.0.0.1:53640" autocomplete="off">
+      <div class="connection-fields"><label>Server IPv4 address<input id="server" value="127.0.0.1"></label><label>UDP port<input id="port" type="number" value="53640" min="1" max="65535"></label><label>Player user ID<input id="user-id" type="number" value="0" min="0"></label></div>
+      <button id="join-local" disabled>Join local server</button> <button id="network" disabled>Load connection script</button>
+    </section>
+    <section><h2>Sound</h2><p>Enable audio, choose a sound file, then run the generated script. This creates an actual Roblox Sound instance connected to the Web Audio backend.</p><input id="sound" type="file" accept="audio/*"></section>
+    <section><h2>Output <button id="clear">Clear</button></h2><pre id="output" role="log" aria-live="polite"></pre></section>
+    <footer><a href="workbench.html">Lua platform workbench</a></footer>
+  </main>
+  <script type="module" src="engine-app.mjs"></script>
+</body>
+</html>

@@ -422,7 +422,7 @@ boost::shared_ptr<T> SharedPtrBridge<T>::getPtr(lua_State* L, unsigned int index
 		return boost::shared_ptr<T>();
 	}
 
-	return getObject(L, index);
+	return Bridge<boost::shared_ptr<T>, 0>::getObject(L, index);
 }
 
 } // namespace Lua

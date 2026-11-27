@@ -4,6 +4,12 @@ cmake_policy(SET CMP0091 NEW)
 
 project(openrbx C CXX)
 
+if (EMSCRIPTEN)
+  enable_testing()
+  add_subdirectory(web)
+  return()
+endif()
+
 if (NOT WIN32)
   message(FATAL_ERROR "Windows is the only supported platform (for now...)")
 endif()

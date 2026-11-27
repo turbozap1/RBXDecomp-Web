@@ -307,7 +307,12 @@ bool BlockBlockContact::getBestPlaneEdge(bool& planeContact, float overlapIgnore
 
 					if (p0p1inCrossAxis > 0) {
 						feature[0] = block(0)->getClosestEdge(c0.rotation, (NormalId) i, crossAxis) + 6;
+#ifdef __EMSCRIPTEN__
+						Vector3 negCrossAxis = -crossAxis;
+						feature[1] = block(1)->getClosestEdge(c1.rotation, (NormalId) j, negCrossAxis) + 6;
+#else
 						feature[1] = block(1)->getClosestEdge(c1.rotation, (NormalId) j, -crossAxis) + 6;
+#endif
 					}
 					else {
 						Vector3 negCrossAxis = -crossAxis;
